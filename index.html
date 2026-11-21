@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zero Conditional Practice: Immediate Consequences</title>
+    <style>
+        :root {
+            --primary: #4A90E2;
+            --primary-hover: #357ABD;
+            --success: #2ECC71;
+            --danger: #E74C3C;
+            --bg-color: #F4F7F6;
+            --card-bg: #FFFFFF;
+            --text-main: #333333;
+            --text-muted: #666666;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1, h2, h3 {
+            color: var(--primary);
+            text-align: center;
+        }
+
+        p.subtitle {
+            text-align: center;
+            color: var(--text-muted);
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .section-card {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+
+        button {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1em;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: var(--primary-hover);
+        }
+
+        button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+
+        /* Section 1: Matching Game */
+        .instructions {
+            text-align: center;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .match-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 600px) {
+            .match-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .match-column {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .match-item {
+            background-color: #f9f9f9;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            padding: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            user-select: none;
+        }
+
+        .match-item:hover {
+            border-color: var(--primary);
+            background-color: #eef5fb;
+        }
+
+        .match-item.selected {
+            border-color: var(--primary);
+            background-color: #d6e8f9;
+            transform: scale(1.02);
+        }
+
+        .match-item.correct {
+            border-color: var(--success);
+            background-color: #eafaf1;
+            color: #1d8348;
+            cursor: default;
+        }
+
+        .match-item.wrong {
+            border-color: var(--danger);
+            background-color: #fdedec;
+            color: #c0392b;
+        }
+
+        /* Section 2: Listening */
+        .audio-controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .quiz-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .question-block {
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid var(--primary);
+        }
+
+        .question-block p {
+            margin-top: 0;
+            font-weight: bold;
+        }
+
+        .options label {
+            display: block;
+            margin-bottom: 8px;
+            cursor: pointer;
+        }
+
+        .feedback {
+            font-weight: bold;
+            margin-left: 10px;
+        }
+
+        /* Section 3: Speech */
+        .prompt-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+
+        .prompt-row label {
+            flex: 0 0 200px;
+            font-weight: bold;
+        }
+
+        .prompt-row input {
+            flex: 1;
+            min-width: 200px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 1em;
+        }
+
+        .speech-output {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border: 1px dashed var(--primary);
+            border-radius: 8px;
+            min-height: 80px;
+            font-style: italic;
+        }
+
+        .speech-actions {
+            margin-top: 15px;
+            display: flex;
+            gap: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Zero Conditional Practice</h1>
+    <p class="subtitle">Theme: Immediate consequences of my actions</p>
+
+    <!-- SECTION 1 -->
+    <div class="section-card">
+        <h2>Section 1: Match the Sentences</h2>
+        <p class="instructions">Click one sentence half on the left, then click the matching half on the right.</p>
+        
+        <div class="match-grid">
+            <div class="match-column" id="conditions-col"></div>
+            <div class="match-column" id="consequences-col"></div>
+        </div>
+    </div>
+
+    <!-- SECTION 2 -->
+    <div class="section-card">
+        <h2>Section 2: Listen and Answer</h2>
+        <p class="instructions">Listen to Mateo talk about his day. Then, answer the questions below.</p>
+        
+        <!-- Hidden Audio Element -->
+        <audio id="mateo-audio" src="mateo.mp3"></audio>
+        
+        <div class="audio-controls">
+            <button id="btn-play">▶ Play Audio</button>
+            <button id="btn-speed">Speed: Normal (1.0x)</button>
+        </div>
+
+        <div class="quiz-container" id="quiz-container">
+            <!-- Questions will be injected via JS -->
+        </div>
+    </div>
+
+    <!-- SECTION 3 -->
+    <div class="section-card">
+        <h2>Section 3: Write and Speak</h2>
+        <p class="instructions">Finish the sentences below to make your own speech.</p>
+        
+        <div id="prompts-container">
+            <!-- Prompts injected via JS -->
+        </div>
+
+        <div class="speech-actions">
+            <button id="btn-compile">Make My Speech</button>
+            <button id="btn-speak" disabled>Listen to my speech</button>
+        </div>
+
+        <div class="speech-output" id="speech-output">
+            Your paragraph will appear here...
+        </div>
+    </div>
+</div>
+
+<script>
+    /* =========================================
+       SECTION 1: MATCHING GAME LOGIC
+       ========================================= */
+    const pairs = [
+        { id: 1, cond: "If I don't eat breakfast,", cons: "I feel hungry." },
+        { id: 2, cond: "If I touch a hot stove,", cons: "I burn my hand." },
+        { id: 3, cond: "If ice is in the sun,", cons: "it melts." },
+        { id: 4, cond: "If I mix blue and yellow,", cons: "I get green." },
+        { id: 5, cond: "If I press this button,", cons: "the TV turns on." },
+        { id: 6, cond: "If I sleep late,", cons: "I am tired in the morning." },
+        { id: 7, cond: "If I don't water my plants,", cons: "they die." },
+        { id: 8, cond: "If it rains,", cons: "I take my umbrella." },
+        { id: 9, cond: "If I eat a lot of candy,", cons: "my stomach hurts." },
+        { id: 10, cond: "If I drop a glass,", cons: "it breaks." },
+        { id: 11, cond: "If water is very cold,", cons: "it becomes ice." },
+        { id: 12, cond: "If I run very fast,", cons: "I feel tired." }
+    ];
+
+    function shuffle(array) {
+        return array.sort(() => Math.random() - 0.5);
+    }
+
+    const conditionsCol = document.getElementById('conditions-col');
+    const consequencesCol = document.getElementById('consequences-col');
+
+    let selectedCond = null;
+    let selectedCons = null;
+    let isProcessing = false;
+
+    function initMatchingGame() {
+        const conditions = [...pairs];
+        const consequences = shuffle([...pairs]); // Shuffle only the right side
+
+        conditions.forEach(item => {
+            const div = document.createElement('div');
+            div.className = 'match-item cond-item';
+            div.textContent = item.cond;
+            div.dataset.id = item.id;
+            div.addEventListener('click', () => handleMatchClick(div, 'cond'));
+            conditionsCol.appendChild(div);
+        });
+
+        consequences.forEach(item => {
+            const div = document.createElement('div');
+            div.className = 'match-item cons-item';
+            div.textContent = item.cons;
+            div.dataset.id = item.id;
+            div.addEventListener('click', () => handleMatchClick(div, 'cons'));
+            consequencesCol.appendChild(div);
+        });
+    }
+
+    function handleMatchClick(element, type) {
+        if (isProcessing || element.classList.contains('correct')) return;
+
+        // Deselect if clicking the same item
+        if (element.classList.contains('selected')) {
+            element.classList.remove('selected');
+            if (type === 'cond') selectedCond = null;
+            else selectedCons = null;
+            return;
+        }
+
+        // Remove previous selection in the same column
+        if (type === 'cond') {
+            if (selectedCond) selectedCond.classList.remove('selected');
+            selectedCond = element;
+        } else {
+            if (selectedCons) selectedCons.classList.remove('selected');
+            selectedCons = element;
+        }
+
+        element.classList.add('selected');
+
+        // Check for match if both are selected
+        if (selectedCond && selectedCons) {
+            isProcessing = true;
+            const isMatch = selectedCond.dataset.id === selectedCons.dataset.id;
+
+            if (isMatch) {
+                selectedCond.classList.remove('selected');
+                selectedCons.classList.remove('selected');
+                selectedCond.classList.add('correct');
+                selectedCons.classList.add('correct');
+                resetSelection();
+            } else {
+                selectedCond.classList.remove('selected');
+                selectedCons.classList.remove('selected');
+                selectedCond.classList.add('wrong');
+                selectedCons.classList.add('wrong');
+                
+                setTimeout(() => {
+                    selectedCond.classList.remove('wrong');
+                    selectedCons.classList.remove('wrong');
+                    resetSelection();
+                }, 800);
+            }
+        }
+    }
+
+    function resetSelection() {
+        selectedCond = null;
+        selectedCons = null;
+        isProcessing = false;
+    }
+
+    initMatchingGame();
+
+    /* =========================================
+       SECTION 2: LISTENING & QUIZ LOGIC
+       ========================================= */
+    const audio = document.getElementById('mateo-audio');
+    const btnPlay = document.getElementById('btn-play');
+    const btnSpeed = document.getElementById('btn-speed');
+    let isPlaying = false;
+    let isSlow = false;
+
+    btnPlay.addEventListener('click', () => {
+        if (isPlaying) {
+            audio.pause();
+            btnPlay.textContent = '▶ Play Audio';
+        } else {
+            audio.play().catch(e => alert("Please ensure 'mateo.mp3' is in the same folder."));
+            btnPlay.textContent = '⏸ Pause Audio';
+        }
+        isPlaying = !isPlaying;
+    });
+
+    audio.addEventListener('ended', () => {
+        isPlaying = false;
+        btnPlay.textContent = '▶ Play Audio';
+    });
+
+    btnSpeed.addEventListener('click', () => {
+        isSlow = !isSlow;
+        audio.playbackRate = isSlow ? 0.85 : 1.0;
+        btnSpeed.textContent = isSlow ? 'Speed: Slow (0.85x)' : 'Speed: Normal (1.0x)';
+    });
+
+    const quizData = [
+        { q: "1. What happens if Mateo leaves the food on the fire?", opts: { A: "It burns.", B: "It gets cold.", C: "It cooks fast." }, ans: "A" },
+        { q: "2. What happens if he is not careful?", opts: { A: "He goes home.", B: "He cuts his hand.", C: "He drops the food." }, ans: "B" },
+        { q: "3. What happens if he drops a plate?", opts: { A: "It bounces.", B: "It gets dirty.", C: "It breaks." }, ans: "C" },
+        { q: "4. What happens if he forgets the bread in the oven?", opts: { A: "It is perfect.", B: "It is ruined.", C: "It is big." }, ans: "B" },
+        { q: "5. What happens if he puts lemon in the guacamole?", opts: { A: "It tastes bad.", B: "It tastes great.", C: "It is spicy." }, ans: "B" },
+        { q: "6. What happens if he takes the bus at 6 PM?", opts: { A: "It is very fast.", B: "It is very empty.", C: "It is very full." }, ans: "C" },
+        { q: "7. What happens if he eats tacos at night?", opts: { A: "He is happy.", B: "He is sad.", C: "He is sick." }, ans: "A" },
+        { q: "8. What happens if he smiles at people?", opts: { A: "They look away.", B: "They smile back.", C: "They are angry." }, ans: "B" },
+        { q: "9. What happens if he finishes work early?", opts: { A: "He goes to sleep.", B: "He calls his mom.", C: "He watches TV." }, ans: "B" },
+        { q: "10. Where does Mateo work?", opts: { A: "In a hospital.", B: "In an office.", C: "In a restaurant." }, ans: "C" }
+    ];
+
+    const quizContainer = document.getElementById('quiz-container');
+
+    quizData.forEach((item, index) => {
+        const qBlock = document.createElement('div');
+        qBlock.className = 'question-block';
+        
+        const qText = document.createElement('p');
+        qText.textContent = item.q;
+        qBlock.appendChild(qText);
+
+        const optionsDiv = document.createElement('div');
+        optionsDiv.className = 'options';
+
+        const feedbackSpan = document.createElement('span');
+        feedbackSpan.className = 'feedback';
+        feedbackSpan.id = `feedback-${index}`;
+
+        for (const [key, value] of Object.entries(item.opts)) {
+            const label = document.createElement('label');
+            const radio = document.createElement('input');
+            radio.type = 'radio';
+            radio.name = `q${index}`;
+            radio.value = key;
+
+            radio.addEventListener('change', (e) => {
+                if (e.target.value === item.ans) {
+                    feedbackSpan.textContent = "✔ Correct!";
+                    feedbackSpan.style.color = "var(--success)";
+                } else {
+                    feedbackSpan.textContent = "✘ Incorrect.";
+                    feedbackSpan.style.color = "var(--danger)";
+                }
+            });
+
+            label.appendChild(radio);
+            label.appendChild(document.createTextNode(` ${key}: ${value}`));
+            optionsDiv.appendChild(label);
+        }
+        
+        qBlock.appendChild(optionsDiv);
+        qBlock.appendChild(feedbackSpan);
+        quizContainer.appendChild(qBlock);
+    });
+
+    /* =========================================
+       SECTION 3: WRITE AND SPEAK LOGIC
+       ========================================= */
+    const writePrompts = [
+        "If I wake up late,",
+        "If I don't study,",
+        "If I eat too much pizza,",
+        "If the weather is sunny,",
+        "If I lose my phone,"
+    ];
+
+    const promptsContainer = document.getElementById('prompts-container');
+
+    writePrompts.forEach((promptText, index) => {
+        const row = document.createElement('div');
+        row.className = 'prompt-row';
+        
+        const label = document.createElement('label');
+        label.textContent = promptText;
+        
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.id = `prompt-input-${index}`;
+        input.placeholder = "type here...";
+
+        row.appendChild(label);
+        row.appendChild(input);
+        promptsContainer.appendChild(row);
+    });
+
+    const btnCompile = document.getElementById('btn-compile');
+    const btnSpeak = document.getElementById('btn-speak');
+    const speechOutput = document.getElementById('speech-output');
+    let finalSpeech = "";
+
+    btnCompile.addEventListener('click', () => {
+        const sentences = writePrompts.map((promptText, index) => {
+            const userText = document.getElementById(`prompt-input-${index}`).value.trim();
+            if (!userText) return ""; 
+            return `${promptText} ${userText}.`;
+        }).filter(s => s !== "");
+
+        if (sentences.length === 0) {
+            speechOutput.textContent = "Please write at least one sentence.";
+            btnSpeak.disabled = true;
+            return;
+        }
+
+        finalSpeech = sentences.join(" ");
+        speechOutput.textContent = finalSpeech;
+        btnSpeak.disabled = false;
+    });
+
+    btnSpeak.addEventListener('click', () => {
+        if (!window.speechSynthesis) {
+            alert("Sorry, your browser doesn't support text-to-speech.");
+            return;
+        }
+        
+        // Cancel any ongoing speech
+        window.speechSynthesis.cancel();
+
+        const utterance = new SpeechSynthesisUtterance(finalSpeech);
+        utterance.lang = 'en-US';
+        utterance.rate = 0.9; // Slightly slower for A2 learners
+        
+        window.speechSynthesis.speak(utterance);
+    });
+</script>
+
+</body>
+</html>
